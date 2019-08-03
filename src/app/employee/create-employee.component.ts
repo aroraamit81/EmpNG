@@ -12,6 +12,8 @@ import {
   FormArray
 } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { Project } from "./ProjectModel";
+import { Contact } from "./ContactModel";
 
 @Component({
   selector: "app-create-employee",
@@ -27,8 +29,30 @@ export class CreateEmployeeComponent implements OnInit {
   empForm: FormGroup;
   readonly NameMinLength: number = 3;
   readonly NameMaxLength: number = 12;
+  projects: Project[] = [
+    {id: 1, name: 'Project1'},
+    {id: 2, name: 'Project2'},
+    {id: 3, name: 'Project3'},
+    {id: 4, name: 'Project4'},
+    {id: 5, name: 'Project5'}
+  ];
+  allContacts: Contact[] = [
+    {id: 1, name: 'Contact1', email: 'c1@gmail.com'},
+    {id: 2, name: 'Contact2', email: 'c2@gmail.com'},
+    {id: 3, name: 'Contact3', email: 'c3@gmail.com'},
+    {id: 4, name: 'Contact4', email: 'c4@gmail.com'},
+    {id: 5, name: 'Contact5', email: 'c5@gmail.com'}
+  ];
+  selectedContacts: Contact[] = [
+    {id: 1, name: 'Contact1', email: 'c1@gmail.com'},
+    {id: 2, name: 'Contact2', email: 'c2@gmail.com'}
+  ];
+
+  Contacts: Contact[];
 
   ngOnInit() {
+    //this.Contacts = this.allContacts.filter(c => this.selectedContacts.indexOf(c) < 0);
+    this.Contacts = this.allContacts;
     this.empForm = this.fb.group({
       fullName: [
         "",
@@ -50,7 +74,9 @@ export class CreateEmployeeComponent implements OnInit {
         },
         { validators: CustomValidators.EmailMatch }
       ),
-      skills: this.fb.array([this.AddSkillFormGroup()])
+      skills: this.fb.array([this.AddSkillFormGroup()]),
+      project: [],
+      contacts: []
     });
     this.contactPreference.valueChanges.subscribe((data: string) => {
       this.OnContactPrefernceChange(data);
@@ -58,6 +84,7 @@ export class CreateEmployeeComponent implements OnInit {
 
     this.empForm.valueChanges.subscribe(data => {
       this.logValidationErrors(this.empForm);
+      console.log(this.empForm.controls);
     });
 
     this.route.paramMap.subscribe(params => {
@@ -65,6 +92,11 @@ export class CreateEmployeeComponent implements OnInit {
       if (empId) {
         this.getEmployee(empId);
       }
+    });
+
+    this.empForm.controls.contacts.valueChanges.subscribe(data => {
+      //this.selectedContacts.push(data);
+      console.log(data);
     });
   }
 
@@ -262,4 +294,10 @@ export class CreateEmployeeComponent implements OnInit {
       (this.fullName.errors.minlength || this.fullName.errors.maxlength)
     );
   }
+
+  getContact(id: number) : Contact {
+    let contact: Contact;
+    return contact;
+  }
+
 }
